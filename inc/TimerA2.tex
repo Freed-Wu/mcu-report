@@ -1,0 +1,65 @@
+﻿% !TEX root = ../main.tex
+\section{实验\chinese{section}}
+\subsection{实验题目}
+Timer\_A实验
+\subsection{实验目的}
+比较模式-Timer\_A0，两路PWM输出，增减计数模式，时钟源SMCLK，输出模式7
+TACLK = SMCLK = default DCOCLKDIV。
+PWM周期CCR0 = 512-1，P1.6输出PWM占空比CCR1 = 37.5\%，P1.7输出PWM占空比CCR1 =12.5\%。
+要求：
+\begin{enumerate}
+	\item 用示波器观察两路PWM输出的波形并拍照，测量周期、正脉宽等参数，与理论值进行对比分析；
+	\item 与实验5.4对比两种计数模式下输出模式7的PWM输出的特点；
+	\item 要想提高PWM输出精度，可采用什么方法？完成相应程序设计，用示波器观察、验证并拍照、分析。
+\end{enumerate}
+\subsection{实验仪器和设备}
+计算机、开发板、示波器、信号源、电源、Code Composer Studio v5、串口调试助手等。
+\subsection{实验步骤}
+\begin{lstlisting}[language=C]
+/****************************************
+  |    P1.6/TA0.1|--> CCR1 - 75% PWM
+--|RST P1.7/TA0.2|--> CCR2 - 25% PWM
+****************************************/
+\end{lstlisting}
+\par\indent 关闭看门狗，设置P1.6和P1.7选取为片内外设功能。设置Timer\_A为输出模式7，通过计算设置PMW波的参数，TACCR0为511，TACCR1为128，TACCR2为384，从两引脚输出PMW波。
+\subsection{程序清单}
+\lstinputlisting{src/code/TimerA21.c}
+\lstinputlisting{src/code/TimerA22.c}
+\subsection{实验结果记录与分析}
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}[htbp]{7.5cm}
+		\centering
+		\caption{TimerA，默认时钟输出，占空比37.5\%}
+		\label{TimerA211}
+		\includegraphics[width=7.5cm]{bitmap/bmp/TimerA211.bmp}
+	\end{minipage}
+	\begin{minipage}[htbp]{7.5cm}
+		\centering
+		\caption{TimerA，默认时钟输出，占空比12.5\%}
+		\label{TimerA212}
+		\includegraphics[width=7.5cm]{bitmap/bmp/TimerA212.bmp}
+	\end{minipage}
+\end{figure}
+\begin{figure}[htbp]
+	\centering
+	\begin{minipage}[htbp]{7.5cm}
+		\centering
+		\caption{TimerA，LFXT1时钟输出，占空比37.5\%}
+		\label{TimerA221}
+		\includegraphics[width=7.5cm]{bitmap/bmp/TimerA221.bmp}
+	\end{minipage}
+	\begin{minipage}[htbp]{7.5cm}
+		\centering
+		\caption{TimerA，LFXT1时钟输出，占空比12.5\%}
+		\label{TimerA222}
+		\includegraphics[width=7.5cm]{bitmap/bmp/TimerA222.bmp}
+	\end{minipage}
+\end{figure}
+\par\indent 在相同的寄存器的取值下，增减计数模式的周期是增计数模式周期的2倍，PWM波的占空比是\((0.5-0.5\times\)增计数模式的占空比\()\)。
+\par\indent 从示波器测量图\ref{TimerA211}和图\ref{TimerA212}看，PWM输出的占空比有\(\pm0.1\%\)的误差，为了提高PWM输出精度，选择使用了准确性更高的外部时钟LFXT1。从图\ref{TimerA221}和图\ref{TimerA222}看，PWM波输出精度明显提高。
+\subsection{遇到的问题与解决方法}
+\begin{enumerate}
+	\item 在计算PWM的占空比是对占空比到底是高电平时间占周期的比值还是低电平时间占周期的比值产生了怀疑。经确认应该是前者，duty cycle翻译成占空比有些不恰当。示波器上的测量按钮有时测出的是前者，有时是后者。原因不明。
+\end{enumerate}
+

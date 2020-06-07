@@ -1,0 +1,33 @@
+﻿% !TEX root = ../main.tex
+\section{实验\chinese{section}}
+\subsection{实验题目}
+Timer\_A实验
+\subsection{实验目的}
+定时模式-Timer\_A0，增/减计数模式，时钟源SMCLK，TA0CCR0 = 50000，ISR内翻转P4.1。
+\par\indent TACLK = SMCLK = default DCOCLKDIV。
+\par\indent 示波器观察P4.1输出波形，与实验5.1对比，可得出什么结论。
+\subsection{实验仪器和设备}
+计算机、开发板、示波器、信号源、电源、Code Composer Studio v5、串口调试助手等。
+\subsection{实验步骤}
+\begin{lstlisting}[language=C]
+/****************************************
+--|RST P4.1|--> LED_Yellow
+****************************************/
+\end{lstlisting}
+\par\indent 关闭看门狗，开总中断，设置Timer\_A模块为增减计数模式，并配置其他功能寄存器。进入LPM3低功耗模式，当Timer\_A发生中断时，查询TAIV内的标志位，确定中断源并进行处理。
+\subsection{程序清单}
+\lstinputlisting{src/code/TimerA1.c}
+\clearpage
+\subsection{实验结果记录与分析}
+\begin{figure}[htbp]
+	\centering
+	\caption{TimerA}
+	\label{TimerA1}
+	\includegraphics[width=8cm]{bitmap/bmp/TimerA1.bmp}
+\end{figure}
+\par\indent 增减计数模式和增计数模式的区别主要是在相同的寄存器取值下，增减计数模式是增计数模式周期的2倍，相应的，如果有PWM波输出的话，占空比也变成了\((0.5-0.5\times\)增计数模式的占空比\()\)。
+\subsection{遇到的问题与解决方法}
+\begin{enumerate}
+	\item 在使用示波器上犯了错。一开始误以为探针是参考，探针上的夹子是信号，但实际上是反过来的。把之前用过示波器的实验的图又重新截取了正确的图代替。
+\end{enumerate}
+
